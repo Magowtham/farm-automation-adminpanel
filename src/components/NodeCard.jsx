@@ -41,10 +41,6 @@ function NodeCard({
     setLoaderAnimation(true);
   };
 
-  const handleSocket = (data) => {
-    const { state } = data;
-  };
-
   const handleAcknowledgement = (data) => {
     if (nodeName === data.nodeName) {
       setNodeState(data.state);
@@ -52,12 +48,19 @@ function NodeCard({
     }
   };
 
+  const handleNodeMannualControl = (data) => {
+    if (nodeName === data.nodeName) {
+      setNodeState(data.nodeState);
+      setLoaderAnimation(false);
+    }
+  };
+
   useEffect(() => {
-    socket.on(nodeName, handleSocket);
-    socket.on("node-acknowledgement", handleAcknowledgement);
-    return () => {
-      socket.off(nodeName, handleSocket);
-      socket.off("node-acknowledgement", handleAcknowledgement);
+    socket.on("adminpanel-acknowledgement", handleAcknowledgement);
+    socket.on("node-mannual-control", handleNodeMannualControl);
+    return () => { 
+      socket.off("adminpanel-acknowledgement", handleAcknowledgement);
+      socket.off("node-mannual-control", handleNodeMannualControl);
     };
   }, []);
 
