@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardActions,
@@ -17,11 +18,15 @@ import ElectricalServicesIcon from "@mui/icons-material/ElectricalServices";
 import PowerRoundedIcon from "@mui/icons-material/PowerRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 
+import CustomSnackBar from "./CustomSnackBar";
+
 import { useSocket } from "../provider/Socket";
 import LoaderAnimation from "./LoaderAnimation";
 
 function NodeCard({
   userId,
+  deviceId,
+  farmId,
   nodeName,
   nodePin,
   nodePowerConsumption,
@@ -29,12 +34,19 @@ function NodeCard({
   nodePrevState,
 }) {
   const { socket } = useSocket();
+  const navigate = useNavigate();
   const [nodeState, setNodeState] = useState(nodePrevState);
   const [loaderAnimation, setLoaderAnimation] = useState(false);
+  const [snackBarData, setSnackBarData] = useState({
+    status: "",
+    message: "",
+  });
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
 
   const handleSwitchButton = () => {
     socket.emit(nodeName, {
       userId,
+      deviceId,
       nodeName: nodeName,
       state: !nodeState,
     });
@@ -55,12 +67,27 @@ function NodeCard({
     }
   };
 
+  const handleUnitDisconnected = () => {
+    setSnackBarData({ status: "error", message: "unit is offline" });
+    setSnackBarOpen(true);
+    setTimeout(() => {
+      setLoaderAnimation(false);
+    }, 1000);
+
+    setTimeout(() => {
+      navigate(`/control-panel/devices/${farmId}`);
+      setLoaderAnimation(false);
+    }, 6000);
+  };
+
   useEffect(() => {
     socket.on("adminpanel-acknowledgement", handleAcknowledgement);
     socket.on("node-mannual-control", handleNodeMannualControl);
-    return () => { 
+    socket.on("unit-disconnected", handleUnitDisconnected);
+    return () => {
       socket.off("adminpanel-acknowledgement", handleAcknowledgement);
       socket.off("node-mannual-control", handleNodeMannualControl);
+      socket.off("unit-disconnected", handleUnitDisconnected);
     };
   }, []);
 
@@ -120,6 +147,12 @@ function NodeCard({
         </CardActions>
       </Card>
       <LoaderAnimation open={loaderAnimation} />
+      <CustomSnackBar
+        status={snackBarData.status}
+        message={snackBarData.message}
+        open={snackBarOpen}
+        setOpen={setSnackBarOpen}
+      />
     </>
   );
 }

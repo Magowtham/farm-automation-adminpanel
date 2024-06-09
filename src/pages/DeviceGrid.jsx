@@ -88,7 +88,7 @@ function DeviceGrid({ dialogBox, setDialogBox }) {
   return (
     <>
       <NodeGridContainer>
-        <Typography variant="h5">Installed Devices</Typography>
+        <Typography variant="h5">Installed Units</Typography>
         <Grid
           container
           gap={5}
@@ -104,7 +104,9 @@ function DeviceGrid({ dialogBox, setDialogBox }) {
               <DeviceCard
                 key={index}
                 id={device.device_id}
+                farmId={id}
                 deviceName={device.device_name}
+                deviceStatus={device.device_status}
                 nodeCount={device.connected_nodes_length}
                 powerConsumption={device.power_consumption}
               />

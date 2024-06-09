@@ -17,7 +17,14 @@ import {
 import DevicesRoundedIcon from "@mui/icons-material/DevicesRounded";
 import PowerRoundedIcon from "@mui/icons-material/PowerRounded";
 
-function DeviceCard({ id, deviceName, nodeCount, powerConsumption }) {
+function DeviceCard({
+  id,
+  farmId,
+  deviceName,
+  deviceStatus,
+  nodeCount,
+  powerConsumption,
+}) {
   const navigate = useNavigate();
   return (
     <Card sx={{ maxWidth: 250, minWidth: 250 }}>
@@ -26,7 +33,12 @@ function DeviceCard({ id, deviceName, nodeCount, powerConsumption }) {
         image="https://cdn.pixabay.com/photo/2022/01/10/18/34/service-6929022_640.png"
       />
       <CardContent>
-        <Typography gutterBottom variant="h6" component="div">
+        <Typography
+          gutterBottom
+          variant="h6"
+          component="div"
+          textTransform="capitalize"
+        >
           {deviceName}
         </Typography>
         <List sx={{ padding: 0 }}>
@@ -58,7 +70,8 @@ function DeviceCard({ id, deviceName, nodeCount, powerConsumption }) {
         <Button
           variant="contained"
           size="small"
-          onClick={() => navigate(`/control-panel/nodes/${id}`)}
+          onClick={() => navigate(`/control-panel/nodes/${id}/${farmId}`)}
+          disabled={deviceStatus ? false : true}
         >
           Manage
         </Button>

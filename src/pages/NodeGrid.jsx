@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Box, Typography, Grid } from "@mui/material";
 import styled from "@emotion/styled";
 
@@ -21,7 +21,8 @@ const NodeGridContainer = styled(Box)(({ theme }) => ({
 }));
 
 function NodeGrid({ userId, dialogBox, setDialogBox }) {
-  const { id } = useParams();
+  const { id, farm_id } = useParams();
+  const navigate = useNavigate();
   const [maxHeight, setMaxHeight] = useState(window.innerHeight - 260);
   const [nodes, setNodes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -76,7 +77,46 @@ function NodeGrid({ userId, dialogBox, setDialogBox }) {
     }
   };
 
+  const checkDeviceStatus = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/device_status/${id}`
+      );
+      const result = await response.json();
+      if (response.status === 200) {
+        setSnackBarData({ status: "success", message: result.message });
+        setSnackBarOpen(true);
+      } else {
+        setSnackBarData({ status: "error", message: result.message });
+        setSnackBarOpen(true);
+
+        setTimeout(() => {
+          setLoading(true);
+        }, 2000);
+
+        setTimeout(() => {
+          navigate(`/control-panel/devices/${farm_id}`);
+          setLoading(false);
+        }, 6000);
+      }
+    } catch (error) {
+      setSnackBarData({
+        status: "error",
+        message: "Server communication failed",
+      });
+      setSnackBarOpen(true);
+      setTimeout(() => {
+        setSnackBarData({
+          status: "error",
+          message: "Check your internet connection",
+        });
+        setSnackBarOpen(true);
+      }, 3000);
+    }
+  };
+
   useEffect(() => {
+    checkDeviceStatus();
     fetchNodes();
   }, []);
 
@@ -110,6 +150,8 @@ function NodeGrid({ userId, dialogBox, setDialogBox }) {
             <Grid item key={index}>
               <NodeCard
                 userId={userId}
+                deviceId={id}
+                farmId={farm_id}
                 nodeName={node.name}
                 nodePin={node.node_pin}
                 nodeManualControlPin={node.node_manual_control_pin}

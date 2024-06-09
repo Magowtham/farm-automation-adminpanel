@@ -122,7 +122,7 @@ function FarmNodeManage({ userId }) {
           }
         />
         <Route
-          path="/nodes/:id"
+          path="/nodes/:id/:farm_id"
           element={
             <NodeGrid
               userId={userId}
