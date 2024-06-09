@@ -80,7 +80,7 @@ function NodeGrid({ userId, dialogBox, setDialogBox }) {
   const checkDeviceStatus = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/device_status/${id}`
+        `${process.env.REACT_APP_API_URL}/device_status/${id}`
       );
       const result = await response.json();
       if (response.status === 200) {
