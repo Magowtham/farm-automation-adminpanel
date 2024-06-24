@@ -153,6 +153,7 @@ function NodeGrid({ userId, dialogBox, setDialogBox }) {
                 deviceId={id}
                 farmId={farm_id}
                 nodeName={node.name}
+                relayId={node.relay_id}
                 nodePin={node.node_pin}
                 nodeManualControlPin={node.node_manual_control_pin}
                 nodePowerConsumption={node.power_consumption}

@@ -27,6 +27,7 @@ function NodeCard({
   userId,
   deviceId,
   farmId,
+  relayId,
   nodeName,
   nodePin,
   nodePowerConsumption,
@@ -44,24 +45,24 @@ function NodeCard({
   const [snackBarOpen, setSnackBarOpen] = useState(false);
 
   const handleSwitchButton = () => {
-    socket.emit(nodeName, {
+    socket.emit("iot-control", {
       userId,
       deviceId,
-      nodeName: nodeName,
+      relayId,
       state: !nodeState,
     });
     setLoaderAnimation(true);
   };
 
   const handleAcknowledgement = (data) => {
-    if (nodeName === data.nodeName) {
+    if (relayId === data.relayId) {
       setNodeState(data.state);
       setLoaderAnimation(false);
     }
   };
 
   const handleNodeMannualControl = (data) => {
-    if (nodeName === data.nodeName) {
+    if (relayId === data.relayId) {
       setNodeState(data.nodeState);
       setLoaderAnimation(false);
     }
