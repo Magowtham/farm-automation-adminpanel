@@ -8,6 +8,7 @@ import DeviceCard from "../components/DeviceCard";
 import AddForm from "../components/AddForm";
 import LoaderAnimation from "../components/LoaderAnimation";
 import CustomSnackBar from "../components/CustomSnackBar";
+import AlertPopUpBox from "../components/AlertPopUpBox";
 
 const NodeGridContainer = styled(Box)(({ theme }) => ({
   flex: 1,
@@ -31,6 +32,9 @@ function DeviceGrid({ dialogBox, setDialogBox }) {
   });
   const [snackBarOpen, setSnackBarOpen] = useState(false);
   const [pageRefresh, setPageRefresh] = useState(false);
+  const [alertBoxOpen, setAlertBoxOpen] = useState(false);
+  const [alertBoxData, setAlertBoxData] = useState(null);
+  const [alertBoxAgree, setAlertBoxAgree] = useState(false);
 
   const handleWindowResize = () => {
     setMaxHeight(window.innerHeight - 260);
@@ -109,6 +113,8 @@ function DeviceGrid({ dialogBox, setDialogBox }) {
                 deviceStatus={device.device_status}
                 nodeCount={device.connected_nodes_length}
                 powerConsumption={device.power_consumption}
+                setAlertBoxOpen={setAlertBoxOpen}
+                setAlertBoxData={setAlertBoxData}
               />
             </Grid>
           ))}
@@ -130,6 +136,12 @@ function DeviceGrid({ dialogBox, setDialogBox }) {
         message={snackBarData.message}
         open={snackBarOpen}
         setOpen={setSnackBarOpen}
+      />
+      <AlertPopUpBox
+        data={alertBoxData}
+        open={alertBoxOpen}
+        setAgree={setAlertBoxAgree}
+        setOpen={setAlertBoxOpen}
       />
     </>
   );

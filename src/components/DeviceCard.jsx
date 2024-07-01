@@ -12,10 +12,12 @@ import {
   ListItemText,
   Typography,
   Button,
+  IconButton,
 } from "@mui/material";
 
 import DevicesRoundedIcon from "@mui/icons-material/DevicesRounded";
 import PowerRoundedIcon from "@mui/icons-material/PowerRounded";
+import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
 function DeviceCard({
   id,
@@ -24,8 +26,15 @@ function DeviceCard({
   deviceStatus,
   nodeCount,
   powerConsumption,
+  setAlertBoxOpen,
+  setAlertBoxData,
 }) {
   const navigate = useNavigate();
+
+  const handleUnitRestart = () => {
+    setAlertBoxOpen(true);
+    setAlertBoxData({ title: "", content: "" });
+  };
   return (
     <Card sx={{ maxWidth: 250, minWidth: 250 }}>
       <CardMedia
@@ -63,10 +72,13 @@ function DeviceCard({
       <CardActions
         sx={{
           display: "flex",
-          justifyContent: "end",
+          justifyContent: "space-between",
           paddingTop: 0,
         }}
       >
+        <IconButton size="medium" onClick={handleUnitRestart}>
+          <RestartAltRoundedIcon color="primary" />
+        </IconButton>
         <Button
           variant="contained"
           size="small"
